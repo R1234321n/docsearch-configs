@@ -1,35 +1,13 @@
-version: 2
-jobs:
-  valid_edited_configs:
-    docker:
-      - image: circleci/ruby:2.4.1
-    steps:
-      - checkout
-      - run: git remote add original_repo git@github.com:algolia/docsearch-configs.git
-      - run: git fetch original_repo
-      - run: sudo apt-get update
-      - run: sudo apt-get update
-      - run: sudo apt-get install jq
-      - run: ./.circleci/valid_edited_configs.sh
-  deploy:
-    docker:
-      - image: circleci/ruby:2.4.1
-    steps:
-      - checkout
-      - run: git remote add original_repo git@github.com:algolia/docsearch-configs.git
-      - run: git fetch original_repo
-      - run: sudo apt-get update
-      - run: sudo apt-get update
-      - run: sudo apt-get install jq
-      - run: ./.circleci/trigger_crawl.sh
+# Use the latest 2.1 version of CircleCI pipeline process engine. See: https://circleci.com/docs/2.0/configuration-reference
+version: 2.1
+# Use a package of configuration called an orb.
+orbs:
+  # Declare a dependency on the welcome-orb
+  welcome: circleci/welcome-orb@0.4.1
+# Orchestrate or schedule a set of jobs
 workflows:
-  version: 2
-  one_and_two:
+  # Name the workflow "welcome"
+  welcome:
+    # Run the welcome/run job in its own container
     jobs:
-      - valid_edited_configs
-      - deploy:
-          filters:
-            branches:
-              only: master
-          requires:
-          - valid_edited_configs
+      - welcome/run
